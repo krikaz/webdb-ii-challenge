@@ -12,6 +12,12 @@ function createNewCar(car) {
 	return db('cars').insert(car);
 }
 
+function deleteCar(id) {
+	return db('cars')
+		.where({ id })
+		.del();
+}
+
 app.get('/cars', async (req, res, next) => {
 	try {
 		const result = await getAllCars();
@@ -26,6 +32,17 @@ app.post('/cars', validateCar, async (req, res) => {
 	try {
 		const newCar = await createNewCar(req.body);
 		res.status(201).json(newCar);
+	} catch (error) {
+		res.status(500);
+		next(new Error('failed!'));
+	}
+});
+
+app.delete('/cars/:id', async (req, res) => {
+	try {
+		const { id } = req.params;
+		const result = await deleteCar(id);
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(500);
 		next(new Error('failed!'));
