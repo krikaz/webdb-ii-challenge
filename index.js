@@ -7,10 +7,10 @@ function getAllCars() {
 }
 
 function createNewCar(car) {
-	return db('cars').insert(car);
-	// .then(ids => {
-	// 	return getById(ids[0]);
-	// });
+	return db('cars').insert(car)
+	.then(ids => {
+		return getById(ids[0]);
+	});
 }
 
 app.use(express.json());
