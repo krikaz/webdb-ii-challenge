@@ -1,11 +1,17 @@
 const express = require('express');
 const app = express();
+const db = require('../data/dbConfig.js');
+
+function getAllCars() {
+	return db('cars');
+}
 
 app.use(express.json());
 
 app.get('/', async (req, res, next) => {
 	try {
-		res.json('success');
+		const result = await getAllCars();
+		res.json(result);
 	} catch (error) {
 		next(new Error('failed!'));
 	}
