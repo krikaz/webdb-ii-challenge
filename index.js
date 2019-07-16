@@ -2,18 +2,18 @@ const express = require('express');
 const app = express();
 const db = require('./data/dbConfig.js');
 
+app.use(express.json());
+
 function getAllCars() {
 	return db('cars');
 }
 
 function createNewCar(car) {
-	return db('cars').insert(car)
-	.then(ids => {
-		return getById(ids[0]);
-	});
+	return db('cars').insert(car);
+	// .then(ids => {
+	// 	return getById(ids[0]);
+	// });
 }
-
-app.use(express.json());
 
 app.get('/cars', async (req, res, next) => {
 	try {
@@ -35,13 +35,13 @@ app.post('/cars', async (req, res) => {
 	}
 });
 
-app.use((err, req, res, next) => {
-	console.error('ERROR:', err);
-	res.status(500).json({
-		message: err.message,
-		stack: err.stack,
-	});
-});
+// app.use((err, req, res, next) => {
+// 	console.error('ERROR:', err);
+// 	res.status(500).json({
+// 		message: err.message,
+// 		stack: err.stack,
+// 	});
+// });
 
 async function validateCar(req, res, next) {
 	if (Object.keys(req.body).length !== 0) {
