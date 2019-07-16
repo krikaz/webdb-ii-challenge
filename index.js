@@ -10,9 +10,6 @@ function getAllCars() {
 
 function createNewCar(car) {
 	return db('cars').insert(car);
-	// .then(ids => {
-	// 	return getById(ids[0]);
-	// });
 }
 
 app.get('/cars', async (req, res, next) => {
@@ -25,7 +22,7 @@ app.get('/cars', async (req, res, next) => {
 	}
 });
 
-app.post('/cars', async (req, res) => {
+app.post('/cars', validateCar, async (req, res) => {
 	try {
 		const newCar = await createNewCar(req.body);
 		res.status(201).json(newCar);
@@ -35,23 +32,16 @@ app.post('/cars', async (req, res) => {
 	}
 });
 
-// app.use((err, req, res, next) => {
-// 	console.error('ERROR:', err);
-// 	res.status(500).json({
-// 		message: err.message,
-// 		stack: err.stack,
-// 	});
-// });
-
 async function validateCar(req, res, next) {
 	if (Object.keys(req.body).length !== 0) {
-		if (req.body.text) {
+		const { VIN, maker, model, mileage } = req.body;
+		if (VIN && maker && model && mileage) {
 			next();
 		} else {
-			res.status(400).json({ message: 'missing required text field' });
+			res.status(400).json({ message: 'missing required field' });
 		}
 	} else {
-		res.status(400).json({ message: 'missing post data' });
+		res.status(400).json({ message: 'missing car data' });
 	}
 }
 
