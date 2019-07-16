@@ -18,6 +18,12 @@ function deleteCar(id) {
 		.del();
 }
 
+function updateCar(id, car) {
+	return db('cars')
+		.where({ id })
+		.update(car);
+}
+
 app.get('/cars', async (req, res, next) => {
 	try {
 		const result = await getAllCars();
@@ -43,6 +49,17 @@ app.delete('/cars/:id', async (req, res) => {
 		const { id } = req.params;
 		const result = await deleteCar(id);
 		res.status(200).json(result);
+	} catch (error) {
+		res.status(500);
+		next(new Error('failed!'));
+	}
+});
+
+app.put('/cars/:id', validateCar, async (req, res) => {
+	try {
+		const { id } = req.params;
+		const oldCar = await updateCar(id, req.body);
+		res.status(200).json(oldCar);
 	} catch (error) {
 		res.status(500);
 		next(new Error('failed!'));
